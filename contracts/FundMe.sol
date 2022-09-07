@@ -13,16 +13,18 @@ contract FundMe {
     mapping(address => uint256) public addressToAmountFunded;
 
     address public immutable i_owner;
+    AggregatorV3Interface public priceFeed;
 
-    constructor() {
+    constructor(address priceFeedAddress) {
         i_owner = msg.sender;
+        priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     function fund() public payable {
         // Want to be able to set a minimum fund amount in USD
         // 1. How to we send ETH to this contract?
         require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
+            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
             "Didn't send enough!"
         );
 

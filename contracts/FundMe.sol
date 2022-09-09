@@ -2,6 +2,8 @@
 pragma solidity ^0.8.8;
 
 import './PriceConverter.sol';
+// example of console.log
+import 'hardhat/console.sol';
 
 error FundMe__NotOwner();
 
@@ -18,15 +20,17 @@ contract FundMe {
     uint256 public constant MINIMUM_USD = 50 * 10**18;
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
-
     address public immutable i_owner;
     AggregatorV3Interface public priceFeed;
 
     // Modifier
     modifier onlyi_owner() {
         if (msg.sender != i_owner) {
+            // What is reverting?
+            // Undo any actions before, and send remaining gas back
             revert FundMe__NotOwner();
         }
+        // Execute rest of function logic
         _;
     }
 
@@ -64,14 +68,21 @@ contract FundMe {
         // 1. How to we send ETH to this contract?
         require(
             msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
+            // If condition in first param is not satisfied,
+            // send error message and revert function
             "Didn't send enough!"
         );
 
-        // What is reverting?
-        // Undo any actions before, and send remaining gas back
-
         // keep track of funders of the contract
         addressToAmountFunded[msg.sender] = msg.value;
+        // examples of console.log
+        console.log('>>>>>> Sender:', msg.sender);
+        console.log('>>>>>> Send Value:', msg.value);
+        // console.log accepts specific types only
+        // e.g.: addressToAmountFunded as type mappings is not accepted
+        // the following line will throw error
+        // console.log(addressToAmountFunded)
+
         funders.push(msg.sender);
     }
 

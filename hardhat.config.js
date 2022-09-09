@@ -6,6 +6,7 @@ const { RINKEBY_RPC_URL, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
+  defaultNetwork: 'hardhat',
   solidity: {
     compilers: [{ version: '0.8.8' }, { version: '0.7.0' }],
   },
@@ -15,6 +16,7 @@ module.exports = {
       url: RINKEBY_RPC_URL,
       accounts: [PRIVATE_KEY],
       chainId: 4,
+      blockConfirmations: 6,
     },
     // To spin up a local hardhat node:
     // yarn hardhat node
@@ -30,5 +32,28 @@ module.exports = {
     user: {
       default: 1,
     },
+  },
+  etherscan: {
+    // apiKey: ETHERSCAN_API_KEY,
+    apiKey: {
+      rinkeby: ETHERSCAN_API_KEY,
+    },
+    customChains: [
+      {
+        network: 'rinkeby',
+        chainId: 4,
+        urls: {
+          apiURL: 'http://api-rinkeby.etherscan.io/api',
+          browserURL: 'https://rinkeby.etherscan.io',
+        },
+      },
+    ],
+  },
+  gasReporter: {
+    enabled: false, // set to true when needs a report
+    outputFile: 'gas-report.md',
+    noColors: true,
+    // currency: 'USD',
+    token: 'MATIC',
   },
 };

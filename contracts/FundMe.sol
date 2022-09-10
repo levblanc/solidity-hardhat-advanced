@@ -21,6 +21,7 @@ contract FundMe {
     // give `s_` prefix to storage variables
     // save & load storage variables takes a lot of gas
     // https://github.com/crytic/evm-opcodes
+    // see: SLOAD & SSTORE
     address[] private s_funders;
     mapping(address => uint256) private s_addressToAmountFunded;
     address private immutable i_owner;
@@ -148,6 +149,7 @@ contract FundMe {
         require(callSuccess, 'Call failed');
     }
 
+    // view / pure functions
     function getOwner() public view returns (address) {
         return i_owner;
     }

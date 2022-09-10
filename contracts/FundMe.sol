@@ -21,10 +21,10 @@ contract FundMe {
     // give `s_` prefix to storage variables
     // save & load storage variables takes a lot of gas
     // https://github.com/crytic/evm-opcodes
-    address[] public s_funders;
-    mapping(address => uint256) public s_addressToAmountFunded;
-    address public immutable i_owner;
-    AggregatorV3Interface public s_priceFeed;
+    address[] private s_funders;
+    mapping(address => uint256) private s_addressToAmountFunded;
+    address private immutable i_owner;
+    AggregatorV3Interface private s_priceFeed;
 
     // Modifier
     modifier onlyi_owner() {
@@ -146,5 +146,25 @@ contract FundMe {
         }('');
 
         require(callSuccess, 'Call failed');
+    }
+
+    function getOwner() public view returns (address) {
+        return i_owner;
+    }
+
+    function getFunder(uint256 index) public view returns (address) {
+        return s_funders[index];
+    }
+
+    function getAddressToAmountFunded(address funder)
+        public
+        view
+        returns (uint256)
+    {
+        return s_addressToAmountFunded[funder];
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }

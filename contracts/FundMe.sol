@@ -18,10 +18,13 @@ contract FundMe {
 
     // State variables
     uint256 public constant MINIMUM_USD = 50 * 10**18;
-    address[] public funders;
-    mapping(address => uint256) public addressToAmountFunded;
+    // give `s_` prefix to storage variables
+    // save & load storage variables takes a lot of gas
+    // https://github.com/crytic/evm-opcodes
+    address[] public s_funders;
+    mapping(address => uint256) public s_addressToAmountFunded;
     address public immutable i_owner;
-    AggregatorV3Interface public priceFeed;
+    AggregatorV3Interface public s_priceFeed;
 
     // Modifier
     modifier onlyi_owner() {
@@ -36,7 +39,7 @@ contract FundMe {
 
     constructor(address priceFeedAddress) {
         i_owner = msg.sender;
-        priceFeed = AggregatorV3Interface(priceFeedAddress);
+        s_priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     // Explainer from: https://solidity-by-example.org/fallback/
@@ -67,14 +70,14 @@ contract FundMe {
         // Want to be able to set a minimum fund amount in USD
         // 1. How to we send ETH to this contract?
         require(
-            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
+            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
             // If condition in first param is not satisfied,
             // send error message and revert function
             "Didn't send enough!"
         );
 
         // keep track of funders of the contract
-        addressToAmountFunded[msg.sender] = msg.value;
+        s_addressToAmountFunded[msg.sender] = msg.value;
         // examples of console.log
         console.log('>>>>>> Sender:', msg.sender);
         console.log('>>>>>> Send Value:', msg.value);
@@ -83,31 +86,65 @@ contract FundMe {
         // the following line will throw error
         // console.log(addressToAmountFunded)
 
-        funders.push(msg.sender);
+        s_funders.push(msg.sender);
     }
 
     function withdraw() public onlyi_owner {
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < s_funders.length;
+            funderIndex++
+        ) {
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+
+        // reset the array
+        s_funders = new address[](0);
+
+        // actually withdraw the funds
+
+        // // Opt1: transfer
+        // payable(msg.sender).transfer(address(this).balance);
+
+        // // Opt2: send
+        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
+
+        // Opt3: call
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }('');
+
+        require(callSuccess, 'Call failed');
+    }
+
+    function cheaperWithdraw() public payable onlyi_owner {
+        // save storage variable into memory
+        // to optimize gas usage
+        // mappings can't be in memory, sorry!
+
+        // If you turn on gas report
+        // turns out it doesn't saving anything.....
+        // instead, the memory variable is costing some more :(
+        address[] memory funders = s_funders;
+
         for (
             uint256 funderIndex = 0;
             funderIndex < funders.length;
             funderIndex++
         ) {
             address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+            s_addressToAmountFunded[funder] = 0;
         }
 
         // reset the array
-        funders = new address[](0);
+        s_funders = new address[](0);
 
         // actually withdraw the funds
-        // // transfer
-        // payable(msg.sender).transfer(address(this).balance);
-        // // send
-        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
-        // call
         (bool callSuccess, ) = payable(msg.sender).call{
             value: address(this).balance
         }('');
+
         require(callSuccess, 'Call failed');
     }
 }

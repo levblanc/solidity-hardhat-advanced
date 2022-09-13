@@ -24,14 +24,14 @@ const chainId = network.name;
         );
       });
 
-      describe('constructor', async () => {
+      describe('constructor', () => {
         it('sets the aggregator addresses correctly', async () => {
           const response = await fundMe.getPriceFeed();
           assert.equal(response, mockV3Aggregator.address);
         });
       });
 
-      describe('fund', async () => {
+      describe('fund', () => {
         it("Fails if you don't send enough ETH", async () => {
           await expect(fundMe.fund()).to.be.revertedWith("Didn't send enough!");
         });
@@ -49,7 +49,7 @@ const chainId = network.name;
         });
       });
 
-      describe('withdraw', async () => {
+      describe('withdraw', () => {
         beforeEach(async () => {
           await fundMe.fund({ value: sendValue });
         });

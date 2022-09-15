@@ -1,6 +1,21 @@
 {
   "name": "solidity-hardhat-advanced",
   "version": "1.0.0",
+  "scripts": {
+    "deploy": "yarn hardhat deploy",
+    "deploy:rinkeby": "yarn hardhat deploy --network rinkeby",
+    "localhost": "yarn hardhat node",
+    "fund:local": "yarn hardhat run scripts/fund.js --network localhost",
+    "withdraw:local": "yarn hardhat run scripts/withdraw.js --network localhost",
+    "fund:rinkeby": "yarn hardhat run scripts/fund.js --network rinkeby",
+    "withdraw:rinkeby": "yarn hardhat run scripts/withdraw.js --network rinkeby",
+    "test": "yarn hardhat test",
+    "test:staging": "yarn hardhat test --network rinkeby",
+    "lint": "yarn solhint 'contracts/*.sol",
+    "lint:fix": "yarn solhint 'contracts/*.sol --fix",
+    "format": "yarn prettier --write .",
+    "coverage": "yarn hardhat converage"
+  },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
     "@ethersproject/abi": "^5.4.7",
@@ -22,20 +37,5 @@
     "prettier-plugin-solidity": "^1.0.0-beta.24",
     "solidity-coverage": "^0.7.21",
     "typechain": "^8.1.0"
-  },
-  "scripts": {
-    "deploy": "yarn hardhat deploy",
-    "deploy:rinkeby": "yarn hardhat deploy --network rinkeby",
-    "localhost": "yarn hardhat node",
-    "fund:local": "yarn hardhat run scripts/fund.js --network localhost",
-    "withdraw:local": "yarn hardhat run scripts/withdraw.js --network localhost",
-    "fund:rinkeby": "yarn hardhat run scripts/fund.js --network rinkeby",
-    "withdraw:rinkeby": "yarn hardhat run scripts/withdraw.js --network rinkeby",
-    "test": "yarn hardhat test",
-    "test:staging": "yarn hardhat test --network rinkeby",
-    "lint": "yarn solhint 'contracts/*.sol",
-    "lint:fix": "yarn solhint 'contracts/*.sol --fix",
-    "format": "yarn prettier --write .",
-    "coverage": "yarn hardhat converage"
   }
 }

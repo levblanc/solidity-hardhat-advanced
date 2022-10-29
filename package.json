@@ -2,19 +2,19 @@
   "name": "solidity-hardhat-advanced",
   "version": "1.0.0",
   "scripts": {
-    "deploy": "yarn hardhat deploy",
-    "deploy:rinkeby": "yarn hardhat deploy --network rinkeby",
-    "localhost": "yarn hardhat node",
-    "fund:local": "yarn hardhat run scripts/fund.js --network localhost",
-    "withdraw:local": "yarn hardhat run scripts/withdraw.js --network localhost",
-    "fund:rinkeby": "yarn hardhat run scripts/fund.js --network rinkeby",
-    "withdraw:rinkeby": "yarn hardhat run scripts/withdraw.js --network rinkeby",
-    "test": "yarn hardhat test",
-    "test:staging": "yarn hardhat test --network rinkeby",
-    "lint": "yarn solhint 'contracts/*.sol",
-    "lint:fix": "yarn solhint 'contracts/*.sol --fix",
-    "format": "yarn prettier --write .",
-    "coverage": "yarn hardhat converage"
+    "deploy": "hardhat deploy",
+    "deploy:goerli": "hardhat deploy --network goerli",
+    "localhost": "hardhat node",
+    "fund:local": "hardhat run scripts/fund.js --network localhost",
+    "withdraw:local": "hardhat run scripts/withdraw.js --network localhost",
+    "fund:goerli": "hardhat run scripts/fund.js --network goerli",
+    "withdraw:goerli": "hardhat run scripts/withdraw.js --network goerli",
+    "test": "hardhat test",
+    "test:staging": "hardhat test --network goerli",
+    "lint": "solhint 'contracts/*.sol'",
+    "lint:fix": "solhint 'contracts/*.sol --fix'",
+    "format": "prettier --write .",
+    "coverage": "hardhat coverage"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
@@ -35,6 +35,7 @@
     "hardhat-gas-reporter": "^1.0.8",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
+    "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.21",
     "typechain": "^8.1.0"
   }
